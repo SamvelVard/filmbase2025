@@ -32,7 +32,7 @@ class News(MyModel):
 
     @property
     def comments_count(self):
-        return self.comments.filter(is_active=True).count()
+        return self.comments.filter(is_published=True).count()
 
     class Meta:
         ordering = ['-published_at']
@@ -115,7 +115,8 @@ class Reaction(MyModel):
                              related_name='reactions')
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE,
                                 null=True, blank=True,
-                                verbose_name="Комментарий", related_name='reactions')
+                                verbose_name="Комментарий",
+                                related_name='reactions')
     class Meta:
         verbose_name = "Реакция"
         verbose_name_plural = "Реакции"

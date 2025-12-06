@@ -1,35 +1,145 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Новости кино</title>
-</head>
-<body>
-    <h1>Новости киноиндустрии</h1>
+{% extends 'news/base.html' %}
+{% load static %}
 
-    {% if user.is_superuser %}
-    <p><a href="{% url 'news:news_create' %}">Создать новость</a></p>
-    {% endif %}
+{% block title %}Киноновости{% endblock %}
 
-    {% for item in news %}
-    <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-        <h2>
-            <a href="{% url 'news:news_detail' item.id %}">
-                {{ item.title }}
+{% block content %}
+<div class="news-container">
+    <!-- ЗАГОЛОВОК -->
+    <div class="news-header">
+        <h1>🎬 КИНОНОВОСТИ</h1>
+        <p class="news-subtitle">Самые свежие новости мира кино и сериалов</p>
+    </div>
+
+    <!-- ПОИСК И ФИЛЬТРЫ -->
+    <div class="news-controls">
+        <div class="search-section">
+            <form method="get" class="search-form">
+                <input type="text" name="query" 
+                       placeholder="Поиск по новостям..." 
+                       value="{{ query|default:'' }}">
+                <button type="submit">
+                    Найти
+                </button>
+            </form>
+        </div>
+        
+        <div class="admin-controls">
+            {% if user.is_superuser %}
+            <a href="/admin/news/news/add/" class="add-news-btn">
+                📝 Добавить новость
             </a>
-        </h2>
+            {% endif %}
+        </div>
+    </div>
 
-        {% if item.image %}
-        <img src="{{ item.image.url }}" alt="{{ item.title }}" width="200">
+    <!-- СПИСОК НОВОСТЕЙ -->
+    <div class="news-grid">
+        {% for item in news %}
+        <div class="news-card">
+            <!-- ИЗОБРАЖЕНИЕ -->
+            {% if item.image %}
+            <div class="news-image">
+                <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                <!-- БЭДЖ ДЛЯ СВЕЖИХ НОВОСТЕЙ -->
+                {% comment %}
+                <div class="news-badge">
+                    НОВОЕ
+                </div>
+                {% endcomment %}
+            </div>
+            {% endif %}
+
+            <!-- КОНТЕНТ -->
+            <div class="news-content">
+                <h2 class="news-title">
+                    <a href="{% url 'news:news_detail' item.id %}">
+                        {{ item.title }}
+                    </a>
+                </h2>
+                
+                <!-- МЕТА ИНФОРМАЦИЯ -->
+                <div class="news-meta">
+                    <span class="meta-date">
+                        📅 {{ item.published_at|date:"d.m.Y" }}
+                    </span>
+                    <span class="meta-comments">
+                        💬 {{ item.comments_count }}
+                    </span>
+                    <span class="meta-likes">
+                        ❤️ {{ item.likes_count }}
+                    </span>
+                </div>
+
+                <!-- ТЕГИ -->
+                {% if item.tags.all %}
+                <div class="news-tags">
+                    {% for tag in item.tags.all|slice:":3" %}
+                    <span class="tag">#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- СТАТИСТИКА И КНОПКИ -->
+                <div class="news-footer">
+                    <div class="reactions">
+                        <span class="like-count">
+                            👍 {{ item.likes_count }}
+                        </span>
+                        <span class="dislike-count">
+                            👎 {{ item.dislikes_count }}
+                        </span>
+                    </div>
+                    <a href="{% url 'news:news_detail' item.id %}" class="read-more">
+                        Читать полностью →
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <!-- ЕСЛИ НОВОСТЕЙ НЕТ -->
+        <div class="no-news">
+            <div class="no-news-icon">
+                🎥
+            </div>
+            <h3>Новостей пока нет</h3>
+            <p>Скоро появятся свежие анонсы фильмов и новости кино!</p>
+            {% if user.is_superuser %}
+            <a href="/admin/news/news/add/" class="add-first-news">
+                Добавить первую новость
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- ПАГИНАЦИЯ -->
+    {% if news.has_other_pages %}
+    <div class="pagination">
+        {% if news.has_previous %}
+        <a href="?page={{ news.previous_page_number }}{% if query %}&query={{ query }}{% endif %}" class="page-prev">
+            ← Назад
+        </a>
         {% endif %}
 
-        <p>{{ item.description|truncatewords:50 }}</p>
+        <div class="page-numbers">
+            {% for num in news.paginator.page_range %}
+                {% if news.number == num %}
+                <span class="page-current">{{ num }}</span>
+                {% elif num > news.number|add:'-3' and num < news.number|add:'3' %}
+                <a href="?page={{ num }}{% if query %}&query={{ query }}{% endif %}" class="page-number">
+                    {{ num }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
 
-        <small>
-            Опубликовано: {{ item.published_at|date:"d.m.Y H:i" }}
-        </small>
+        {% if news.has_next %}
+        <a href="?page={{ news.next_page_number }}{% if query %}&query={{ query }}{% endif %}" class="page-next">
+            Вперед →
+        </a>
+        {% endif %}
     </div>
-    {% empty %}
-    <p>Новостей пока нет.</p>
-    {% endfor %}
-</body>
-</html>
+    {% endif %}
+</div>
+{% endblock %}

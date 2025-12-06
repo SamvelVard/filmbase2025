@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ news.title }}</title>
-</head>
-<body>
-    <h1>{{ news.title }}</h1>
+{% extends 'base.html' %}
 
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block content %}
+<div class="news-detail">
+    <!-- ЗАГОЛОВОК -->
+    <h1>{{ news.title }}</h1>
+    
+    <!-- ДАТА ПУБЛИКАЦИИ -->
+    <div class="news-meta">
+        <span class="news-date">
+            📅 {{ news.published_at|date:"d.m.Y H:i" }}
+        </span>
+        <span class="news-views">
+            👁️ {{ news.views_count|default:"0" }}
+        </span>
+    </div>
+
+    <!-- ГЛАВНОЕ ИЗОБРАЖЕНИЕ -->
     {% if news.image %}
-    <img src="{{ news.image.url }}" alt="{{ news.title }}" width="600">
+    <div class="news-main-image">
+        <img src="{{ news.image.url }}" alt="{{ news.title }}">
+    </div>
     {% endif %}
 
     <!-- БЛОКИ НОВОСТИ -->
     <div class="news-blocks">
         {% for block in news_blocks %}
-        <div class="news-block" style="background-color: {{ block.background_color }}; padding: 20px; margin: 20px 0;">
-
+        <div class="news-block">
             {% if block.title %}
             <h2>{{ block.title }}</h2>
             {% endif %}
-
+            
             {% if block.content %}
             <div class="block-content">
                 {{ block.content|linebreaks }}
             </div>
             {% endif %}
-
+            
             {% if block.image %}
             <div class="block-image">
-                <img src="{{ block.image.url }}" alt="{{ block.title|default:'Изображение' }}" width="500">
+                <img src="{{ block.image.url }}" alt="{{ block.title|default:'Изображение' }}">
             </div>
             {% endif %}
-
         </div>
-        {% empty %}
-        <p>Блоки новости пока не добавлены.</p>
         {% endfor %}
     </div>
 
-    <!-- Комментарии -->
-    <h2>Комментарии ({{ comments|length }}):</h2>
-    <!-- ... код комментариев ... -->
-</body>
-</html>
+    <!-- РЕАКЦИИ НА НОВОСТЬ -->
+    <div class="news-reactions">
+        <form method="post" action="{% url 'news:news_reaction_create' news.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="reaction_type" value="1"> <!-- LIKE = 1 -->
+            <button type="submit" class="reaction-btn like-btn">
+                👍 {{ news.likes_count|default:"0" }}
+            </button>
+        </form>
+        
+        <form method="post" action="{% url 'news:news_reaction_create' news.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="reaction_type" value="-1"> <!-- DISLIKE = -1 -->
+            <button type="submit" class="reaction-btn dislike-btn">
+                👎 {{ news.dislikes_count|default:"0" }}
+            </button>
+        </form>
+    </div>
+
+    <!-- КОММЕНТАРИИ -->
+    <div class="comments-section">
+        <h3>💬 Комментарии ({{ comments|length }})</h3>
+        
+        {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-header">
+                <span class="comment-author">{{ comment.user.username }}</span>
+                <span class="comment-date">{{ comment.published_at|date:"d.m.Y H:i" }}</span>
+            </div>
+            
+            <div class="comment-content">
+                {{ comment.content|linebreaks }}
+            </div>
+            
+            <!-- РЕАКЦИИ НА КОММЕНТАРИЙ -->
+            <div class="comment-reactions">
+                <form method="post" action="{% url 'news:comment_reaction_create' comment.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="reaction_type" value="1"> <!-- LIKE = 1 -->
+                    <button type="submit" class="comment-reaction-btn">
+                        👍 {{ comment.likes_count|default:"0" }}
+                    </button>
+                </form>
+                
+                <form method="post" action="{% url 'news:comment_reaction_create' comment.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="reaction_type" value="-1"> <!-- DISLIKE = -1 -->
+                    <button type="submit" class="comment-reaction-btn">
+                        👎 {{ comment.dislikes_count|default:"0" }}
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-comments">Комментариев пока нет. Будьте первым!</p>
+        {% endfor %}
+    </div>
+
+    <!-- ФОРМА ДОБАВЛЕНИЯ КОММЕНТАРИЯ -->
+    {% if user.is_authenticated %}
+    <div class="add-comment">
+        <h4>Добавить комментарий</h4>
+        <form method="post" action="{% url 'news:comment_create' news.id %}">
+            {% csrf_token %}
+            <textarea name="content" rows="4" placeholder="Напишите ваш комментарий..." required></textarea>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="login-to-comment">
+        <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
