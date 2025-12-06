@@ -23,11 +23,11 @@ class FilmForm(forms.ModelForm):
                   "director", 'people']
         widgets = {
             'people': autocomplete.ModelSelect2Multiple(
-                url='news:person_autocomplete'),
+                url='films:person_autocomplete'),
             'director': autocomplete.ModelSelect2(
-                url='news:person_autocomplete'),
+                url='films:person_autocomplete'),
             'country': autocomplete.ModelSelect2(
-                url='news:country_autocomplete'),
+                url='films:country_autocomplete'),
         }
 
 

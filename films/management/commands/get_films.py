@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def filename():
-        return "news/data/news.json"
+        return "films/data/films.json"
 
     @staticmethod
     def headers():

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ news.title }}</title>
+</head>
+<body>
+    <h1>{{ news.title }}</h1>
+
+    {% if news.image %}
+    <img src="{{ news.image.url }}" alt="{{ news.title }}" width="600">
+    {% endif %}
+
+    <!-- БЛОКИ НОВОСТИ -->
+    <div class="news-blocks">
+        {% for block in news_blocks %}
+        <div class="news-block" style="background-color: {{ block.background_color }}; padding: 20px; margin: 20px 0;">
+
+            {% if block.title %}
+            <h2>{{ block.title }}</h2>
+            {% endif %}
+
+            {% if block.content %}
+            <div class="block-content">
+                {{ block.content|linebreaks }}
+            </div>
+            {% endif %}
+
+            {% if block.image %}
+            <div class="block-image">
+                <img src="{{ block.image.url }}" alt="{{ block.title|default:'Изображение' }}" width="500">
+            </div>
+            {% endif %}
+
+        </div>
+        {% empty %}
+        <p>Блоки новости пока не добавлены.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Комментарии -->
+    <h2>Комментарии ({{ comments|length }}):</h2>
+    <!-- ... код комментариев ... -->
+</body>
+</html>

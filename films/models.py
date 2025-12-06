@@ -76,7 +76,7 @@ class Film(MyModel):
     genres = models.ManyToManyField(Genre, verbose_name="Жанр")
     director = models.ForeignKey(
         Person, on_delete=models.CASCADE, verbose_name="Режиссер",
-        related_name="directed_DCAMWDWADAW")
+        related_name="directed_films")
     length = models.PositiveIntegerField(
         "Продолжительность", blank=True, null=True)
     year = models.PositiveIntegerField("Год выпуска", blank=True, null=True,

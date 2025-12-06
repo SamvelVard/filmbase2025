@@ -20,7 +20,7 @@ class NewsBlockForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content', 'user', 'news', 'parent', 'published_at', 'is_published']
+        fields = ['content']
         widgets = {
             'news': autocomplete.ModelSelect2(
                 url='news:news_autocomplete'),

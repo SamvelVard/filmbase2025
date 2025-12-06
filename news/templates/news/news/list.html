@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Новости кино</title>
+</head>
+<body>
+    <h1>Новости киноиндустрии</h1>
+
+    {% if user.is_superuser %}
+    <p><a href="{% url 'news:news_create' %}">Создать новость</a></p>
+    {% endif %}
+
+    {% for item in news %}
+    <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+        <h2>
+            <a href="{% url 'news:news_detail' item.id %}">
+                {{ item.title }}
+            </a>
+        </h2>
+
+        {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.title }}" width="200">
+        {% endif %}
+
+        <p>{{ item.description|truncatewords:50 }}</p>
+
+        <small>
+            Опубликовано: {{ item.published_at|date:"d.m.Y H:i" }}
+        </small>
+    </div>
+    {% empty %}
+    <p>Новостей пока нет.</p>
+    {% endfor %}
+</body>
+</html>

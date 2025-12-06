@@ -21,6 +21,7 @@ class News(MyModel):
                                        help_text="Отображать новость на сайте",
                                        default=True)
 
+
     @property
     def likes_count(self):
         return self.reactions.filter(reaction_type='like').count()

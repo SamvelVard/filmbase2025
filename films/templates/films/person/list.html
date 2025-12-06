@@ -1,14 +1,14 @@
-{% extends 'news/base.html' %}
-{% load news_tags %}
+{% extends 'films/base.html' %}
+{% load films_tags %}
 
 
 {% block content %}
   <h1>
-    {{'news:person'|model_verbose_name_plural}}
+    {{'films:person'|model_verbose_name_plural}}
     {% if user.is_superuser %}
-      <a href="{% url 'news:person_create' %}" title="Добавить персону" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+      <a href="{% url 'films:person_create' %}" title="Добавить персону" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
     {% endif %}
   </h1>  
-  {% include 'news/person/search.html' %}
-  {% include "news/people.html"%}
+  {% include 'films/person/search.html' %}
+  {% include "films/people.html"%}
 {% endblock %}

@@ -1,11 +1,11 @@
-{% extends 'news/base.html' %}
-{% load news_tags %}
+{% extends 'films/base.html' %}
+{% load films_tags %}
 
 {% block breadcrumb %}
   <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="{% url 'news:film_list' %}">{{ 'news:film'|model_verbose_name_plural }}</a>
+        <a href="{% url 'films:film_list' %}">{{ 'films:film'|model_verbose_name_plural }}</a>
       </li>
       <li class="breadcrumb-item active">{{ film.name }}</li>
     </ol>
@@ -20,11 +20,11 @@
       {% endif %}
       {% if user.is_superuser %}
       <div class="d-grid gap-2 my-4">
-        <a href="{% url 'news:film_update' film.id %}" class="btn btn-primary btn-block">
+        <a href="{% url 'films:film_update' film.id %}" class="btn btn-primary btn-block">
           <i class="bi-pencil-square"></i>
           Редактировать
         </a>
-        <a href="{% url 'news:film_delete' film.id %}" class="btn btn-danger btn-block">
+        <a href="{% url 'films:film_delete' film.id %}" class="btn btn-danger btn-block">
           <i class="bi-trash"></i>
           Удалить
         </a>
@@ -43,7 +43,7 @@
               <dt class="col-md-3 text-md-end">
                 {% verbose_name film 'country' %}
               </dt>
-              <dd class="col-md-9"><a href="{% url 'news:country_detail' film.country.id %}">{{ film.country.name }}</a></dd>
+              <dd class="col-md-9"><a href="{% url 'films:country_detail' film.country.id %}">{{ film.country.name }}</a></dd>
             {% endif %}
 
             {% if film.genres %}
@@ -52,7 +52,7 @@
               </dt>
               <dd class="col-md-9">
                 {% for genre in film.genres.all %}
-                  <a href="{% url 'news:genre_detail' genre.id %}">{{ genre.name }}</a>{% if not forloop.last %}, {% endif %}
+                  <a href="{% url 'films:genre_detail' genre.id %}">{{ genre.name }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
               </dd>
             {% endif %}
@@ -83,7 +83,7 @@
               <dt class="col-md-3 text-md-end">
                 {% verbose_name film 'director' %}
               </dt>
-              <dd class="col-md-9"><a href="{% url 'news:person_detail' film.director.id %}">{{ film.director.name }}</a></dd>
+              <dd class="col-md-9"><a href="{% url 'films:person_detail' film.director.id %}">{{ film.director.name }}</a></dd>
             {% endif %}
             {% if film.people %}
               <dt class="col-md-3 text-md-end">
@@ -91,7 +91,7 @@
               </dt>
               <dd class="col-md-9">
                 {% for person in film.people.all %}
-                  <a href="{% url 'news:person_detail' person.id %}">{{ person.name }}</a>{% if not forloop.last %}, {% endif %}
+                  <a href="{% url 'films:person_detail' person.id %}">{{ person.name }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
               </dd>
             {% endif %}

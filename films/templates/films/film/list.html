@@ -1,13 +1,13 @@
-{% extends 'news/base.html' %}
-{% load news_tags %}
+{% extends 'films/base.html' %}
+{% load films_tags %}
 
 {% block content %}
   <h1>
-    {{ 'news:film'|model_verbose_name_plural }}
+    {{ 'films:film'|model_verbose_name_plural }}
     {% if user.is_superuser %}
-      <a href="{% url 'news:film_create' %}" title="Добавить фильм" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+      <a href="{% url 'films:film_create' %}" title="Добавить фильм" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
     {% endif %}
   </h1>
-  {% include 'news/film/search.html' %}
-  {% include 'news/news.html' %}
+  {% include 'films/film/search.html' %}
+  {% include 'films/films.html' %}
 {% endblock %}
