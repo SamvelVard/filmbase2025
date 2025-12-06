@@ -1,16 +1,16 @@
 
 {% load django_bootstrap5 %}
 
-{% if films %}
+{% if news %}
     <div class="row">
-      {% for film in films %}
+      {% for film in news %}
         <div class="col-md-3 py-2">
-          {% include "films/film.html" with film=film %}
+          {% include "news/film.html" with film=film %}
         </div>
       {% endfor %}
     </div>
     <div class="my-4">
-      {% bootstrap_pagination films %}
+      {% bootstrap_pagination news %}
     </div>    
   {% else %}
     <div class="alert alert-info">Фильмы не найдены</div>

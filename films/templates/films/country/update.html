@@ -1,17 +1,17 @@
-{% extends 'films/base.html' %}
+{% extends 'news/base.html' %}
 {% load django_bootstrap5 %}
-{%load films_tags%}
+{%load news_tags%}
 
 {% block breadcrumb %}
   <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="{% url 'films:country_list' %}">
-          {{"films:country"|model_verbose_name_plural}}
+        <a href="{% url 'news:country_list' %}">
+          {{"news:country"|model_verbose_name_plural}}
         </a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{% url 'films:country_detail' form.instance.id %}">
+        <a href="{% url 'news:country_detail' form.instance.id %}">
           {{form.instance.id}}
         </a>
       </li>

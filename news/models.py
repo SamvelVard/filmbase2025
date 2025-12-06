@@ -21,6 +21,18 @@ class News(MyModel):
                                        help_text="Отображать новость на сайте",
                                        default=True)
 
+    @property
+    def likes_count(self):
+        return self.reactions.filter(reaction_type='like').count()
+
+    @property
+    def dislikes_count(self):
+        return self.reactions.filter(reaction_type='dislike').count()
+
+    @property
+    def comments_count(self):
+        return self.comments.filter(is_active=True).count()
+
     class Meta:
         ordering = ['-published_at']
         verbose_name = "Новость"
@@ -66,6 +78,14 @@ class Comment(MyModel):
                                         verbose_name="Дата добавления")
     is_published = models.BooleanField(default=True,
                                        verbose_name="Опубликовано")
+
+    @property
+    def likes_count(self):
+        return self.reactions.filter(reaction_type='like').count()
+
+    @property
+    def dislikes_count(self):
+        return self.reactions.filter(reaction_type='dislike').count()
 
     class Meta:
         verbose_name = "Комментарий"

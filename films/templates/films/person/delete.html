@@ -1,15 +1,15 @@
-{% extends 'films/base.html' %}
-{% load films_tags %}
+{% extends 'news/base.html' %}
+{% load news_tags %}
 {% load django_bootstrap5 %}
 
 {% block breadcrumb %}
   <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="{% url 'films:person_list' %}">{{ 'films:person'|model_verbose_name_plural }}</a>
+        <a href="{% url 'news:person_list' %}">{{ 'news:person'|model_verbose_name_plural }}</a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{% url 'films:person_detail' person.id %}">{{ person.name }}</a>
+        <a href="{% url 'news:person_detail' person.id %}">{{ person.name }}</a>
       </li>
       <li class="breadcrumb-item active">Удаление</li>
     </ol>
@@ -23,7 +23,7 @@
     <form method="POST">
       {% csrf_token %}
       {% bootstrap_button 'Да, удалить!' button_type='submit' button_class='btn-primary' %}
-      <a href="{% url 'films:person_detail' person.id %}" class="btn btn-light ms-4">Нет</a>
+      <a href="{% url 'news:person_detail' person.id %}" class="btn btn-light ms-4">Нет</a>
     </form>
   </div>
 {% endblock %}

@@ -1,17 +1,17 @@
-{% extends 'films/base.html' %}
-{% load films_tags %}
+{% extends 'news/base.html' %}
+{% load news_tags %}
 
 {% block content %}
   <h1>
-    {{ 'films:country'|model_verbose_name_plural }}
+    {{ 'news:country'|model_verbose_name_plural }}
     {% if user.is_superuser %}
-      <a href="{% url 'films:country_create' %}" title="Добавить страну" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+      <a href="{% url 'news:country_create' %}" title="Добавить страну" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
     {% endif %}
   </h1>
   {% if countries %}
     <div class="list-group">
       {% for country in countries %}
-        <a href="{% url 'films:country_detail' country.id %}" class="list-group-item list-group-item-action">{{ country.name }}</a>
+        <a href="{% url 'news:country_detail' country.id %}" class="list-group-item list-group-item-action">{{ country.name }}</a>
       {% endfor %}
     </div>
   {% else %}

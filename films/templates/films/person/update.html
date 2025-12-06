@@ -1,15 +1,15 @@
-{% extends 'films/base.html' %}
+{% extends 'news/base.html' %}
 {% load django_bootstrap5 %}
-{% load films_tags %}
+{% load news_tags %}
 
 {% block breadcrumb %}
   <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="{% url 'films:person_list' %}">{{ 'films:person'|model_verbose_name_plural }}</a>
+        <a href="{% url 'news:person_list' %}">{{ 'news:person'|model_verbose_name_plural }}</a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{% url 'films:person_detail' form.instance.id %}">{{ form.instance.id }}</a>
+        <a href="{% url 'news:person_detail' form.instance.id %}">{{ form.instance.id }}</a>
       </li>
       <li class="breadcrumb-item active">Редактирование персоны</li>
     </ol>

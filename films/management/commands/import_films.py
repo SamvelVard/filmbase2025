@@ -5,15 +5,15 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-from films.models import Country, Genre, Person, Film
-from .get_films import Command as GetCommand
+from news.models import Country, Genre, Person, Film
+from .get_news import Command as GetCommand
 
 
 class Command(BaseCommand):
-    help = 'Import films from json file'
+    help = 'Import news from json file'
 
     def handle(self, *args, **options):
-        self.create_films()
+        self.create_news()
 
     @staticmethod
     def get_image_by_url(url):
@@ -90,8 +90,8 @@ class Command(BaseCommand):
 
         return film
 
-    def create_films(self):
+    def create_news(self):
         with open(GetCommand.filename(), 'r') as f:
-            films_data = json.load(f)
-            for film_data in films_data['docs']:
+            news_data = json.load(f)
+            for film_data in news_data['docs']:
                 self.create_film(film_data)
