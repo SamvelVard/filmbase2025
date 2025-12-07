@@ -7,7 +7,12 @@
 <div class="news-container">
     <!-- ЗАГОЛОВОК -->
     <div class="news-header">
-        <h1>🎬 КИНОНОВОСТИ</h1>
+        <h1>
+            🎬 КИНОНОВОСТИ
+{#            {% if user.is_superuser %}#}
+{#              <a href="{% url 'news:news_create' %}" title="Добавить новость" class="btn btn-primary"><i class="bi-plus-lg"></i></a>#}
+{#            {% endif %}#}
+        </h1>
         <p class="news-subtitle">Самые свежие новости мира кино и сериалов</p>
     </div>
 
@@ -22,14 +27,6 @@
                     Найти
                 </button>
             </form>
-        </div>
-        
-        <div class="admin-controls">
-            {% if user.is_superuser %}
-            <a href="/admin/news/news/add/" class="add-news-btn">
-                📝 Добавить новость
-            </a>
-            {% endif %}
         </div>
     </div>
 
@@ -61,14 +58,14 @@
                 <!-- МЕТА ИНФОРМАЦИЯ -->
                 <div class="news-meta">
                     <span class="meta-date">
-                        📅 {{ item.published_at|date:"d.m.Y" }}
+                        {{ item.published_at|date:"d.m.Y" }}
                     </span>
-                    <span class="meta-comments">
-                        💬 {{ item.comments_count }}
-                    </span>
-                    <span class="meta-likes">
-                        ❤️ {{ item.likes_count }}
-                    </span>
+{#                    <span class="meta-comments">#}
+{#                        💬 {{ item.comments_count }}#}
+{#                    </span>#}
+{#                    <span class="meta-likes">#}
+{#                        ❤️ {{ news.likes_count }}#}
+{#                    </span>#}
                 </div>
 
                 <!-- ТЕГИ -->
@@ -80,20 +77,17 @@
                 </div>
                 {% endif %}
 
-                <!-- СТАТИСТИКА И КНОПКИ -->
-                <div class="news-footer">
-                    <div class="reactions">
-                        <span class="like-count">
-                            👍 {{ item.likes_count }}
-                        </span>
-                        <span class="dislike-count">
-                            👎 {{ item.dislikes_count }}
-                        </span>
-                    </div>
-                    <a href="{% url 'news:news_detail' item.id %}" class="read-more">
-                        Читать полностью →
-                    </a>
-                </div>
+{#                <!-- СТАТИСТИКА И КНОПКИ -->#}
+{#                <div class="news-footer">#}
+{#                    <div class="reactions">#}
+{#                        <span class="like-count">#}
+{#                            👍 {{ news.likes_count }}#}
+{#                        </span>#}
+{#                        <span class="dislike-count">#}
+{#                            👎 {{ news.dislikes_count }}#}
+{#                        </span>#}
+{#                    </div>#}
+{#                </div>#}
             </div>
         </div>
         {% empty %}

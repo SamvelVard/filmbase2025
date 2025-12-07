@@ -6,7 +6,7 @@ app_name = 'news'
 urlpatterns = [
     path('', views.news_list, name='news_list'),
     path('<int:id>/', views.news_detail, name='news_detail'),
-    # path('create/', views.news_create, name='news_create'),
+    path('create/', views.news_create, name='news_create'),
     # path('<int:id>/update/', views.news_update, name='news_update'),
     # path('<int:id>/delete/', views.news_delete, name='news_delete'),
 

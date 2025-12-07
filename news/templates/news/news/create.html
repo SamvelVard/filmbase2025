@@ -1,0 +1,27 @@
+{% extends 'news/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_list' %}">
+                Новости
+            </a>
+        </li>
+        <li class="breadcrumb-item active">
+            Новая новость
+        </li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Новая новость</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {{ form.media }}
+    {% bootstrap_button button_type="submit" content="Сохранить" %}
+</form>
+{% endblock %}

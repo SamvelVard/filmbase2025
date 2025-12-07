@@ -38,17 +38,17 @@ def news_detail(request, id):
     })
 
 #
-# @user_passes_test(check_admin)
-# def news_create(request):
-#     if request.method == 'POST':
-#         form = NewsForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             news = form.save()
-#             messages.success(request, 'Новость создана')
-#             return redirect('news:news_detail', id=news.id)
-#     else:
-#         form = NewsForm()
-#     return render(request, 'news/news/create.html', {'form': form})
+@user_passes_test(check_admin)
+def news_create(request):
+    if request.method == 'POST':
+        form = NewsForm(request.POST, request.FILES)
+        if form.is_valid():
+            news = form.save()
+            messages.success(request, 'Новость создана')
+            return redirect('news:news_detail', id=news.id)
+    else:
+        form = NewsForm()
+    return render(request, 'news/news/create.html', {'form': form})
 #
 #
 # @user_passes_test(check_admin)
@@ -127,13 +127,18 @@ def comment_delete(request, comment_id):
 @login_required
 def news_reaction_create(request, id):
     news = get_object_or_404(News, id=id)
-    reaction_type = request.POST.get('reaction_type')
+    reaction_type = int(request.POST.get('reaction_type'))
     existing_reaction = Reaction.objects.filter(
         news=news,
         user=request.user).first()
     if existing_reaction:
-        existing_reaction.delete()
-        messages.info(request, 'Реакция удалена')
+        if existing_reaction.reaction_type == reaction_type:
+            existing_reaction.delete()
+            messages.info(request, 'Реакция удалена')
+        else:
+            existing_reaction.reaction_type = reaction_type
+            existing_reaction.save()
+            messages.success(request, 'Реакция изменена')
     else:
         Reaction.objects.create(
             news=news,
@@ -148,13 +153,18 @@ def news_reaction_create(request, id):
 @login_required
 def comment_reaction_create(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    reaction_type = request.POST.get('reaction_type')
+    reaction_type = int(request.POST.get('reaction_type'))
     existing_reaction = Reaction.objects.filter(
         comment=comment,
         user=request.user).first()
     if existing_reaction:
-        existing_reaction.delete()
-        messages.info(request, 'Реакция удалена')
+        if existing_reaction.reaction_type == reaction_type:
+            existing_reaction.delete()
+            messages.info(request, 'Реакция удалена')
+        else:
+            existing_reaction.reaction_type = reaction_type
+            existing_reaction.save()
+            messages.success(request, 'Реакция изменена')
     else:
         Reaction.objects.create(
             comment=comment,
