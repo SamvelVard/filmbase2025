@@ -16,7 +16,7 @@
   <div class="row">
     <div class="col-md-3">
       {% if film.cover %}
-        <img src="{{ film.cover.url }}" alt="{{ film.name }}" class="img-thumbnail" />
+        <img src="{{ film.cover.url }}" alt="{{ film.name }}" class="img-thumbnail news-image" />
       {% endif %}
       {% if user.is_superuser %}
       <div class="d-grid gap-2 my-4">

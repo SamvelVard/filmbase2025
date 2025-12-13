@@ -1,4 +1,3 @@
-
 {% load django_bootstrap5 %}
 
 {% if films %}
@@ -11,7 +10,7 @@
     </div>
     <div class="my-4">
       {% bootstrap_pagination films %}
-    </div>    
+    </div>
   {% else %}
     <div class="alert alert-info">Фильмы не найдены</div>
   {% endif %}

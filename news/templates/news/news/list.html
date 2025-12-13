@@ -1,4 +1,4 @@
-{% extends 'news/base.html' %}
+{% extends 'films/base.html' %}
 {% load static %}
 
 {% block title %}Киноновости{% endblock %}
@@ -8,26 +8,22 @@
     <!-- ЗАГОЛОВОК -->
     <div class="news-header">
         <h1>
-            🎬 КИНОНОВОСТИ
+            Киноновости
 {#            {% if user.is_superuser %}#}
 {#              <a href="{% url 'news:news_create' %}" title="Добавить новость" class="btn btn-primary"><i class="bi-plus-lg"></i></a>#}
 {#            {% endif %}#}
         </h1>
-        <p class="news-subtitle">Самые свежие новости мира кино и сериалов</p>
     </div>
 
-    <!-- ПОИСК И ФИЛЬТРЫ -->
-    <div class="news-controls">
-        <div class="search-section">
-            <form method="get" class="search-form">
-                <input type="text" name="query" 
-                       placeholder="Поиск по новостям..." 
-                       value="{{ query|default:'' }}">
-                <button type="submit">
-                    Найти
-                </button>
-            </form>
-        </div>
+    <div class="search-section">
+        <form>
+          <div class="input-group mb-3">
+            <input type="search" name="query" class="form-control" placeholder="Название фильма" value="{{query}}"/>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi-search"></i>
+            </button>
+          </div>
+        </form>
     </div>
 
     <!-- СПИСОК НОВОСТЕЙ -->
@@ -36,59 +32,25 @@
         <div class="news-card">
             <!-- ИЗОБРАЖЕНИЕ -->
             {% if item.image %}
-            <div class="news-image">
-                <img src="{{ item.image.url }}" alt="{{ item.title }}">
-                <!-- БЭДЖ ДЛЯ СВЕЖИХ НОВОСТЕЙ -->
-                {% comment %}
-                <div class="news-badge">
-                    НОВОЕ
-                </div>
-                {% endcomment %}
-            </div>
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-thumbnail news-image">
             {% endif %}
 
             <!-- КОНТЕНТ -->
-            <div class="news-content">
-                <h2 class="news-title">
+                <h2>
                     <a href="{% url 'news:news_detail' item.id %}">
                         {{ item.title }}
                     </a>
                 </h2>
-                
-                <!-- МЕТА ИНФОРМАЦИЯ -->
-                <div class="news-meta">
-                    <span class="meta-date">
-                        {{ item.published_at|date:"d.m.Y" }}
-                    </span>
-{#                    <span class="meta-comments">#}
-{#                        💬 {{ item.comments_count }}#}
-{#                    </span>#}
-{#                    <span class="meta-likes">#}
-{#                        ❤️ {{ news.likes_count }}#}
-{#                    </span>#}
-                </div>
 
-                <!-- ТЕГИ -->
-                {% if item.tags.all %}
-                <div class="news-tags">
-                    {% for tag in item.tags.all|slice:":3" %}
-                    <span class="tag">#{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-{#                <!-- СТАТИСТИКА И КНОПКИ -->#}
-{#                <div class="news-footer">#}
-{#                    <div class="reactions">#}
-{#                        <span class="like-count">#}
-{#                            👍 {{ news.likes_count }}#}
-{#                        </span>#}
-{#                        <span class="dislike-count">#}
-{#                            👎 {{ news.dislikes_count }}#}
-{#                        </span>#}
-{#                    </div>#}
-{#                </div>#}
-            </div>
+            <!-- МЕТА ИНФОРМАЦИЯ -->
+{#            <div class="news-meta">#}
+{#                <span class="meta-likes">#}
+{#                  ❤️ {{ news.likes_count }}#}
+{#                </span>#}
+{#                <span class="meta-date">#}
+{#                    {{ item.published_at|date:"d.m.Y" }}#}
+{#                </span>#}
+{#            </div>#}
         </div>
         {% empty %}
         <!-- ЕСЛИ НОВОСТЕЙ НЕТ -->
