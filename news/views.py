@@ -127,7 +127,7 @@ def comment_delete(request, comment_id):
 @login_required
 def news_reaction_create(request, id):
     news = get_object_or_404(News, id=id)
-    reaction_type = int(request.POST.get('reaction_type'))
+    reaction_type = int(request.POST.get('reaction_type', 0))
     existing_reaction = Reaction.objects.filter(
         news=news,
         user=request.user).first()

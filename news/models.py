@@ -24,11 +24,11 @@ class News(MyModel):
 
     @property
     def likes_count(self):
-        return self.reactions.filter(reaction_type='like').count()
+        return self.reactions.filter(reaction_type=1).count()
 
     @property
     def dislikes_count(self):
-        return self.reactions.filter(reaction_type='dislike').count()
+        return self.reactions.filter(reaction_type=-1).count()
 
     @property
     def comments_count(self):
@@ -117,6 +117,7 @@ class Reaction(MyModel):
                                 null=True, blank=True,
                                 verbose_name="Комментарий",
                                 related_name='reactions')
+
     class Meta:
         verbose_name = "Реакция"
         verbose_name_plural = "Реакции"

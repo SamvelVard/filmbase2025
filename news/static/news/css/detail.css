@@ -32,6 +32,12 @@
     cursor: pointer;
 }
 
+.replies-block{
+    margin-left: 30px;
+    border-left: 2px solid #e0e0e0;
+    padding-left: 15px;
+}
+
 .comments-section{
     margin-top: 25px;
 }
@@ -66,20 +72,18 @@
 
 .comment-reaction-btn{
     background: none;
-    border: none;
+    border: 1px solid darkgrey;
+    border-radius: 10px;
+    background-color: aqua;
     box-shadow: none;
     cursor: pointer;
-    grid-row: 2;
 }
 
-.comment-meta{
-    grid-row: 2;
-    display: flex;
-    align-items: center;
-    text-align: right;
-    justify-content: end;
-}
+/*.comment-meta{*/
+/*    grid-row: 2;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    text-align: right;*/
+/*    justify-content: end;*/
+/*}*/
 
-.сomment-reply{
-    grid-row: 3;
-}
