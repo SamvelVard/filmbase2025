@@ -29,12 +29,12 @@ def news_detail(request, id):
     news_blocks = NewsBlock.objects.filter(news=news).order_by('order')
     comments = Comment.objects.filter(news=news, is_published=True
     ).order_by('-published_at')
-    comment_form = CommentForm()
+    comments_form = CommentForm()
     return render(request, 'news/news/detail.html', {
         'news': news,
         'news_blocks': news_blocks,
         'comments': comments,
-        'comment_form': comment_form
+        'comments_form': comments_form
     })
 
 #

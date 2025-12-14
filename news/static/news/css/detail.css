@@ -39,7 +39,7 @@
 .comment{
     display: grid;
     margin-bottom: 30px;
-    width: 760px;
+    width: 780px;
     border: 1px solid darkgrey;
     border-radius: 10px;
     padding: 10px;
@@ -60,6 +60,7 @@
 
 .comment-date{
     grid-row: 1;
+    margin-right: 5px;
     text-align: right;
 }
 
@@ -77,4 +78,8 @@
     align-items: center;
     text-align: right;
     justify-content: end;
+}
+
+.сomment-reply{
+    grid-row: 3;
 }
