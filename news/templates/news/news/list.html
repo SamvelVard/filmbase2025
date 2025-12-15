@@ -9,9 +9,9 @@
     <div class="news-header">
         <h1>
             Киноновости
-{#            {% if user.is_superuser %}#}
-{#              <a href="{% url 'news:news_create' %}" title="Добавить новость" class="btn btn-primary"><i class="bi-plus-lg"></i></a>#}
-{#            {% endif %}#}
+            {% if user.is_superuser %}
+              <a href="{% url 'news:news_create' %}" title="Добавить новость" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+            {% endif %}
         </h1>
     </div>
 

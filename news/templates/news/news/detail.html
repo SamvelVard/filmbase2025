@@ -67,25 +67,22 @@
     <div class="comments-section">
         <h3>💬 Комментарии ({{ comments.count }})</h3>
 
-{#        {% for comment in comments %}#}
-{#        {% if not comment.parent %}#}
+        {% for comment in comments %}
+        {% if not comment.parent %}
             <div class="comment">
             {% include "news/news/comment.html" with comment=comment is_reply=False %}
 
-{#            {% with replies=comment.replies.all %}#}
-{#            {% if replies %}#}
-{#                {% for replie in replies %}#}
-{#                    {% include "news/news/comment.html" with comment=replie is_reply=True %}#}
-{#                {% endfor %}#}
-{#            {% endif %}#}
-{#            {% endwith %}#}
+            {% with replies=comment.replies.all %}
+            {% if replies %}
+                {% for replie in replies %}
+                    {% include "news/news/comment.html" with comment=replie is_reply=True %}
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
 
             </div>
-{#        {% endif %}#}
-{#        {% endfor %}#}
-
-{#    НЕ ПОНИМАЮ ПОЧЕМУ НО В ХТМЛ КАЖЕТСЯ БУДТО КЛАСС блок comment находится вне блока comment-section #}
-
+        {% endif %}
+        {% endfor %}
         {% if user.is_authenticated %}
         <div class="add-comment">
             <h4>Добавить комментарий</h4>

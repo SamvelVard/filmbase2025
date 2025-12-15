@@ -9,22 +9,21 @@
         {{ comment.content|linebreaks }}
     </div>
 
-{#    <!-- Реакции для комментария -->#}
-{#    <div class="comment-reactions">#}
-{#        <form method="post" action="{% url 'news:comment_reaction_create' comment.id %}">#}
-{#            {% csrf_token %}#}
-{#            <input type="hidden" name="reaction_type" value="1">#}
-{#            <button type="submit" class="comment-reaction-btn">#}
-{#                👍 {{ comment.likes_count|default:"0" }}#}
-{#            </button>#}
-{#        </form>#}
-{##}
-{#        <form method="post" action="{% url 'news:comment_reaction_create' comment.id %}">#}
-{#            {% csrf_token %}#}
-{#            <input type="hidden" name="reaction_type" value="-1">#}
-{#            <button type="submit" class="comment-reaction-btn">#}
-{#                👎 {{ comment.dislikes_count|default:"0" }}#}
-{#            </button>#}
-{#        </form>#}
-{#    </div>#}
+    <div class="comment-reactions">
+        <form method="post" action="{% url 'news:comment_reaction_create' news.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="reaction_type" value="1">
+            <button type="submit" class="reaction-btn">
+                👍 {{ news.likes_count|default:"0" }}
+            </button>
+        </form>
+
+        <form method="post" action="{% url 'news:comment_reaction_create' news.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="reaction_type" value="-1">
+            <button type="submit" class="reaction-btn">
+                👎 {{ news.dislikes_count|default:"0" }}
+            </button>
+        </form>
+    </div>
 </div>
