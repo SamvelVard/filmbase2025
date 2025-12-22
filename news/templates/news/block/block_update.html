@@ -1,0 +1,123 @@
+{% extends 'films/base.html' %}
+{% load static %}
+
+{% block title %}Редактирование блока{% endblock %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_list' %}">Новости</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_detail' news.id %}">
+                {{ news.title|truncatechars:30 }}
+            </a>
+        </li>
+        <li class="breadcrumb-item active">Редактирование блока</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        Редактирование блока для новости: "{{ news.title }}"
+                        {% if block.title %}
+                            <br><small>{{ block.title }}</small>
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="news" value="{{ news.id }}">
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5>Ошибки в форме:</h5>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label">Заголовок блока</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.title.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Необязательное поле</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_content" class="form-label">Содержание *</label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.content.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label">Изображение</label>
+                            {% if block.image %}
+                            <div class="mb-2">
+                                <img src="{{ block.image.url }}" alt="{{ block.title|default:'Изображение блока' }}"
+                                     class="img-fluid rounded" style="max-height: 200px;">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="image-clear" id="image-clear">
+                                    <label class="form-check-label" for="image-clear">
+                                        Удалить текущее изображение
+                                    </label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="mt-2">
+                                <input type="file" name="image" accept="image/*" id="id_image" class="form-control">
+                            </div>
+                            {% if form.image.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.image.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Оставьте пустым, чтобы оставить текущее изображение</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_order" class="form-label">Порядок</label>
+                            {{ form.order }}
+                            {% if form.order.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.order.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Чем меньше число, тем выше блок в списке</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Сохранить изменения
+                            </button>
+                            <a href="{% url 'news:news_detail' news.id %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

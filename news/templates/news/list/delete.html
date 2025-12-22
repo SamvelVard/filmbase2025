@@ -1,0 +1,74 @@
+{% extends 'films/base.html' %}
+{% load films_tags %}
+{% load django_bootstrap5 %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_list' %}">Новости</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_detail' news.id %}">
+                {{ news.title|truncatechars:30 }}
+            </a>
+        </li>
+        <li class="breadcrumb-item active">Удаление новости</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Удаление новости</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">Вы уверены, что хотите удалить эту новость?</h5>
+                        <p class="mb-3"><strong>Новость:</strong> "{{ news.title }}"</p>
+                        <hr>
+                        <div class="mb-3">
+                            <strong>Дата публикации:</strong> {{ news.published_at|date:"d.m.Y H:i" }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Статус:</strong>
+                            {% if news.is_published %}
+                                <span class="badge bg-success">Опубликовано</span>
+                            {% else %}
+                                <span class="badge bg-warning">Не опубликовано</span>
+                            {% endif %}
+                        </div>
+
+                        {% if news.image %}
+                        <div class="mb-3">
+                            <strong>Изображение:</strong><br>
+                            <img src="{{ news.image.url }}" alt="{{ news.title }}"
+                                 class="img-fluid rounded mt-2" style="max-height: 200px;">
+                        </div>
+                        {% endif %}
+
+                        <p class="mt-3">
+                            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                            Это действие нельзя отменить! Все связанные блоки новости, комментарии и реакции также будут удалены.
+                        </p>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="d-flex justify-content-between">
+                                {% bootstrap_button 'Да, удалить новость' button_type='submit' button_class='btn-danger' %}
+                                <a href="{% url 'news:news_detail' news.id %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Отмена
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -35,6 +35,19 @@
                 <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-thumbnail news-image">
             {% endif %}
 
+            {% if user.is_superuser %}
+            <div class="d-grid gap-2 my-4">
+              <a href="{% url 'news:news_update' item.id %}" class="btn btn-primary btn-block">
+                <i class="bi-pencil-square"></i>
+                Редактировать
+              </a>
+              <a href="{% url 'news:news_delete' item.id %}" class="btn btn-danger btn-block">
+                <i class="bi-trash"></i>
+                Удалить
+              </a>
+            </div>
+            {% endif %}
+
             <!-- КОНТЕНТ -->
                 <h2>
                     <a href="{% url 'news:news_detail' item.id %}">

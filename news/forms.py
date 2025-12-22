@@ -11,7 +11,7 @@ class NewsForm(forms.ModelForm):
 class NewsBlockForm(forms.ModelForm):
     class Meta:
         model = NewsBlock
-        fields = ['news', 'title', 'content', 'image', 'order', 'background_color']
+        fields = ['news', 'title', 'content', 'image', 'order']
         widgets = {
             'news': autocomplete.ModelSelect2(
                 url='admin:autocomplete')

@@ -1,0 +1,135 @@
+{% extends 'films/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_list' %}">Новости</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'news:news_detail' news.id %}">
+                {{ news.title|truncatechars:30 }}
+            </a>
+        </li>
+        <li class="breadcrumb-item active">Редактирование</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Редактирование новости: "{{ news.title }}"</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5>Ошибки в форме:</h5>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label">Заголовок новости *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.title.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label">Изображение</label>
+                            {% if news.image %}
+                            <div class="mb-2">
+                                <img src="{{ news.image.url }}" alt="{{ news.title }}"
+                                     class="img-fluid rounded" style="max-height: 200px;">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="image-clear" id="image-clear">
+                                    <label class="form-check-label" for="image-clear">
+                                        Удалить текущее изображение
+                                    </label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="mt-2">
+                                <input type="file" name="image" accept="image/*" id="id_image" class="form-control">
+                            </div>
+                            {% if form.image.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.image.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Оставьте пустым, чтобы оставить текущее изображение</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_published_at" class="form-label">Дата публикации</label>
+                            {{ form.published_at }}
+                            {% if form.published_at.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.published_at.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Когда новость станет видна пользователям</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                {{ form.is_published }}
+                                <label class="form-check-label" for="id_is_published">
+                                    Опубликовано
+                                </label>
+                            </div>
+                            {% if form.is_published.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.is_published.errors }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Отображать новость на сайте</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Сохранить изменения
+                            </button>
+                            <a href="{% url 'news:news_detail' news.id %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Инициализация datetimepicker для поля даты публикации
+    document.addEventListener('DOMContentLoaded', function() {
+        const publishedAtField = document.getElementById('id_published_at');
+        if (publishedAtField) {
+            // Если используете flatpickr или другой datetimepicker
+            // flatpickr(publishedAtField, {
+            //     enableTime: true,
+            //     dateFormat: "Y-m-d H:i",
+            //     locale: "ru"
+            // });
+        }
+    });
+</script>
+{% endblock %}

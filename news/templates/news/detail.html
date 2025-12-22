@@ -6,8 +6,16 @@
 
 {% block content %}
 <div class="news-detail">
-    <h4 style='color: #3480eb'>Киноновости</h4>
+    <h1 style='color: #3480eb'>
+        Киноновости
+        {% if user.is_superuser %}
+            <a href="{% url 'news:news_block_create' news.id %}" title="Добавить блок к этой новости" class="btn btn-primary"><i class="bi-plus-lg"></i></a>
+        {% endif %}
+    </h1>
+
     <h2>{{ news.title }}</h2>
+    {% if user.is_superuser %}
+    {% endif %}
 
     <div class="news-meta">
         <span class="news-date">
@@ -26,23 +34,34 @@
 
     <div class="news-blocks">
         {% for block in news_blocks %}
-        <div class="news-block">
-            {% if block.title %}
-            <h3>{{ block.title }}</h3>
-            {% endif %}
-            
-            {% if block.content %}
-            <div class="block-content">
-                {{ block.content|linebreaks }}
+            <div class="news-block text-bg-secondary p-3">
+                {% if block.title %}
+                <h3>{{ block.title }}</h3>
+                {% endif %}
+
+                {% if user.is_superuser %}
+                <div class="mt-3 d-flex gap-2">
+                    <a href="{% url 'news:news_block_update' block.id %}" class="btn btn-primary btn-sm">
+                        <i class="bi-pencil-square"></i> Редактировать
+                    </a>
+                    <a href="{% url 'news:news_block_delete' block.id %}" class="btn btn-danger btn-sm">
+                        <i class="bi-trash"></i> Удалить
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if block.content %}
+                <div class="block-content">
+                    {{ block.content|linebreaks }}
+                </div>
+                {% endif %}
+
+                {% if block.image %}
+                <div class="block-image-position">
+                    <img src="{{ block.image.url }}" alt="{{ block.title|default:'Изображение' }}" class="block-image">
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
-            
-            {% if block.image %}
-            <div class="block-image-position">
-                <img src="{{ block.image.url }}" alt="{{ block.title|default:'Изображение' }}" class="block-image">
-            </div>
-            {% endif %}
-        </div>
         {% endfor %}
     </div>
 
@@ -70,12 +89,12 @@
         {% for comment in comments %}
         {% if not comment.parent %}
             <div class="comment">
-            {% include "news/news/comment.html" with comment=comment is_reply=False %}
+            {% include "news/comment.html" with comment=comment is_reply=False %}
 
             {% with replies=comment.replies.all %}
             {% if replies %}
                 {% for replie in replies %}
-                    {% include "news/news/comment.html" with comment=replie is_reply=True %}
+                    {% include "news/comment.html" with comment=replie is_reply=True %}
                 {% endfor %}
             {% endif %}
             {% endwith %}

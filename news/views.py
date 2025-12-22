@@ -17,7 +17,7 @@ def news_list(request):
         news = news.filter(title__icontains=query)
     news = news.order_by('-published_at')
     news = paginate(request, news)
-    return render(request, 'news/news/list.html', {'news': news,
+    return render(request, 'news/list.html', {'news': news,
                                                     'query': query})
 
 
@@ -30,7 +30,7 @@ def news_detail(request, id):
     comments = Comment.objects.filter(news=news, is_published=True
     ).order_by('-published_at')
     comments_form = CommentForm()
-    return render(request, 'news/news/detail.html', {
+    return render(request, 'news/detail.html', {
         'news': news,
         'news_blocks': news_blocks,
         'comments': comments,
@@ -48,35 +48,102 @@ def news_create(request):
             return redirect('news:news_detail', id=news.id)
     else:
         form = NewsForm()
-    return render(request, 'news/news/create.html', {'form': form})
+    return render(request, 'news/list/create.html', {'form': form})
+
+@user_passes_test(check_admin)
+def news_update(request, id):
+    news = get_object_or_404(News, id=id)
+    if request.method == 'POST':
+        form = NewsForm(request.POST, request.FILES, instance=news)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Новость изменена')
+            return redirect('news:news_detail', id=news.id)
+    else:
+        form = NewsForm(instance=news)
+    return render(request, 'news/list/update.html',
+                  {'form': form,
+                   'title': 'Редактирование заголовка',
+                   'news': news})
+
+
+@user_passes_test(check_admin)
+def news_delete(request, id):
+    news = get_object_or_404(News, id=id)
+    if request.method == 'POST':
+        news.delete()
+        messages.success(request, 'Новость удалена')
+        return redirect('news:news_list')
+    return render(request, 'news/list/delete.html',
+                  {'news': news})
+
+@user_passes_test(check_admin)
+def news_block_create(request, news_id):
+    news = get_object_or_404(News, id=news_id)
+
+    if request.method == 'POST':
+        form = NewsBlockForm(request.POST, request.FILES)
+        if form.is_valid():
+            block = form.save(commit=False)  # Не сохраняем сразу
+            block.news = news  # Привязываем блок к новости
+
+            # Определяем порядок (опционально)
+            last_block = NewsBlock.objects.filter(news=news).order_by('-order').first()
+            block.order = (last_block.order + 1) if last_block else 0
+
+            block.save()  # Теперь сохраняем
+
+            messages.success(request, 'Блок новости создан')
+            # Редирект на детальную страницу новости (не блока!)
+            return redirect('news:news_detail', id=news.id)
+    else:
+        form = NewsBlockForm()
+    return render(request, 'news/block/block_create.html', {'form': form, 'news': news})
+
+
+@user_passes_test(check_admin)
+def news_block_update(request, block_id):
+    block = get_object_or_404(NewsBlock, id=block_id)
+    news = block.news
+
+    if request.method == 'POST':
+        form = NewsBlockForm(request.POST, request.FILES, instance=block)
+        if form.is_valid():
+            block = form.save(commit=False)
+            block.news = news  # Явно устанавливаем новость
+            block.save()
+
+            messages.success(request, 'Блок новости обновлен')
+            return redirect('news:news_detail', id=news.id)
+    else:
+        form = NewsBlockForm(instance=block)
+        form.initial['news'] = news.id
+
+    return render(request, 'news/block/block_update.html', {
+        'form': form,
+        'block': block,
+        'news': news,
+        'title': 'Редактирование блока'
+    })
+
+@user_passes_test(check_admin)
+def news_block_delete(request, block_id):
+    block = get_object_or_404(NewsBlock, id=block_id)
+
+    if request.method == 'POST':
+        news_id = block.news.id
+        block.delete()
+        messages.success(request, 'Блок новости удален')
+        return redirect('news:news_detail', id=news_id)
+
+    # Создайте этот шаблон в папке news/block/
+    return render(request, 'news/block/block_delete.html', {
+        'block': block,
+        'news': block.news
+    })
 #
 #
-# @user_passes_test(check_admin)
-# def news_update(request, id):
-#     news = get_object_or_404(News, id=id)
-#     if request.method == 'POST':
-#         form = NewsForm(request.POST, request.FILES, instance=news)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Новость изменена')
-#             return redirect('news:news_detail', id=news.id)
-#     else:
-#         form = NewsForm(instance=news)
-#     return render(request, 'news/news/update.html',
-#                   {'form': form,
-#                    'title': 'Редактирование заголовка',
-#                    'news': news})
-#
-#
-# @user_passes_test(check_admin)
-# def news_delete(request, id):
-#     news = get_object_or_404(News, id=id)
-#     if request.method == 'POST':
-#         news.delete()
-#         messages.success(request, 'Новость удалена')
-#         return redirect('news:news_list')
-#     return render(request, 'news/news/delete.html',
-#                   {'news': news})
+
 
 
 @login_required
@@ -149,11 +216,11 @@ def news_reaction_create(request, id):
 
     return redirect('news:news_detail', id=news.id)
 
-
 @login_required
 def comment_reaction_create(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    reaction_type = int(request.POST.get('reaction_type'))
+    news = comment.news
+    reaction_type = int(request.POST.get('reaction_type', 0))
     existing_reaction = Reaction.objects.filter(
         comment=comment,
         user=request.user).first()
@@ -172,4 +239,5 @@ def comment_reaction_create(request, comment_id):
             reaction_type=reaction_type
         )
         messages.success(request, 'Реакция добавлена')
+
     return redirect('news:news_detail', id=comment.news.id)

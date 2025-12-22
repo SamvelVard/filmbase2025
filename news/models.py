@@ -45,13 +45,12 @@ class News(MyModel):
 
 class NewsBlock(MyModel):
     news = models.ForeignKey(News, on_delete=models.CASCADE,
-                             related_name='blocks', verbose_name="Блок новости")
+                             related_name='block', verbose_name="Блок новости")
     title = models.CharField("Заголовок блока", max_length=400, blank=True)
     content = models.TextField("Содержание блока")
     image = models.ImageField("Изображение для блока",
-                              upload_to='IMGnews/blocks', blank=True, null=True)
+                              upload_to='IMGnews/block', blank=True, null=True)
     order = models.PositiveIntegerField("Порядок блоков", default=0)
-    background_color = models.CharField("Цвет фона", default="#ffffff", max_length=7)
 
     class Meta:
         verbose_name = "Блок новости"
@@ -82,11 +81,11 @@ class Comment(MyModel):
 
     @property
     def likes_count(self):
-        return self.reactions.filter(reaction_type='like').count()
+        return self.reactions.filter(reaction_type=1).count()
 
     @property
     def dislikes_count(self):
-        return self.reactions.filter(reaction_type='dislike').count()
+        return self.reactions.filter(reaction_type=-1).count()
 
     class Meta:
         verbose_name = "Комментарий"

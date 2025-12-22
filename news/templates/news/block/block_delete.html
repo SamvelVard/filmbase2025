@@ -1,0 +1,60 @@
+{% extends 'films/base.html' %}
+{% load films_tags %}
+{% load django_bootstrap5 %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'news:news_list' %}">Новости</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'news:news_detail' news.id %}">{{ news.title|truncatechars:30 }}</a></li>
+        <li class="breadcrumb-item active">Удаление блока</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"><i class="bi bi-trash"></i> Удаление блока</h4>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Подтвердите удаление</h4>
+                <p>Вы собираетесь удалить блок из новости <strong>"{{ news.title }}"</strong>.</p>
+
+                <hr>
+
+                <h5>Информация о блоке:</h5>
+                <ul>
+                    {% if block.title %}<li><strong>Заголовок:</strong> {{ block.title }}</li>{% endif %}
+                    <li><strong>Порядок:</strong> {{ block.order }}</li>
+                    <li><strong>Создан:</strong> {{ block.created_at|date:"d.m.Y H:i" }}</li>
+                </ul>
+
+                {% if block.image %}
+                <div class="text-center my-3">
+                    <img src="{{ block.image.url }}" alt="Изображение блока" class="img-thumbnail" style="max-height: 200px;">
+                </div>
+                {% endif %}
+
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-info-circle"></i> Это действие необратимо. Блок будет удален навсегда.
+                </div>
+
+                <form method="POST" class="mt-3">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger flex-fill">
+                            <i class="bi bi-trash"></i> Удалить блок
+                        </button>
+                        <a href="{% url 'news:news_detail' news.id %}" class="btn btn-outline-secondary flex-fill">
+                            <i class="bi bi-x-circle"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

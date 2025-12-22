@@ -59,10 +59,10 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('title', models.CharField(blank=True, max_length=400, verbose_name='Заголовок блока')),
                 ('content', models.TextField(verbose_name='Содержание блока')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='IMGnews/blocks', verbose_name='Изображение для блока')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='IMGnews/block', verbose_name='Изображение для блока')),
                 ('order', models.PositiveIntegerField(default=0, verbose_name='Порядок блоков')),
                 ('background_color', models.CharField(default='#ffffff', max_length=7, verbose_name='Цвет фона')),
-                ('news', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='blocks', to='news.news', verbose_name='Блок новости')),
+                ('news', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='block', to='news.news', verbose_name='Блок новости')),
             ],
             options={
                 'verbose_name': 'Блок новости',
