@@ -26,12 +26,6 @@
         </span>
     </div>
 
-{#    {% if news.image %}#}
-{#    <div class="news-main-image">#}
-{#        <img src="{{ news.image.url }}" alt="{{ news.title }}">#}
-{#    </div>#}
-{#    {% endif %}#}
-
     <div class="news-blocks">
         {% for block in news_blocks %}
             <div class="news-block text-bg-secondary p-3">
@@ -85,37 +79,35 @@
 
     <div class="comments-section">
         <h3>💬 Комментарии ({{ comments.count }})</h3>
-
-        {% for comment in comments %}
-        {% if not comment.parent %}
-            <div class="comment">
-            {% include "news/comment.html" with comment=comment is_reply=False %}
-
-            {% with replies=comment.replies.all %}
-            {% if replies %}
-                {% for replie in replies %}
-                    {% include "news/comment.html" with comment=replie is_reply=True %}
-                {% endfor %}
-            {% endif %}
-            {% endwith %}
-
+        {% if user.is_authenticated %}
+            <div class="add-comment">
+                <h4>Добавить комментарий</h4>
+                <div class="reply-form-container">
+                    <form method="post" action="{% url 'news:comment_create' news.id %}">
+                        {% csrf_token %}
+                        <textarea name="content" rows="2" placeholder="Напишите ваш комментарий..." required class="textarea"></textarea>
+                        <input type="hidden" name="parent" value="">
+                        <button type="submit" class="reaction-btn">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="login-to-comment">
+                <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий</p>
             </div>
         {% endif %}
-        {% endfor %}
-        {% if user.is_authenticated %}
-        <div class="add-comment">
-            <h4>Добавить комментарий</h4>
-            <form method="post" action="{% url 'news:comment_create' news.id %}">
-                {% csrf_token %}
-                <textarea name="content" rows="2" placeholder="Напишите ваш комментарий..." required></textarea>
-                <button type="submit" class="comment-reaction-btn">Отправить</button>
-            </form>
+
+        <div class="comments-list">
+            {% for comment in comments %}
+                {% if not comment.parent %}
+                    {% include 'news/comment.html' with comment=comment all_comments=comments news=news %}
+                {% endif %}
+            {% empty %}
+                <p>Пока нет комментариев. Будьте первым!</p>
+            {% endfor %}
         </div>
-        {% else %}
-        <div class="login-to-comment">
-            <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий</p>
-        </div>
-        {% endif %}
+
+
     </div>
 
 </div>

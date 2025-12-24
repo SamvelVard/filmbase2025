@@ -1,0 +1,14 @@
+{% if user.is_authenticated %}
+<div class="add-comment">
+    <h4>Добавить комментарий</h4>
+    <form method="post" action="{% url 'news:comment_create' news.id %}">
+        {% csrf_token %}
+        <textarea name="content" rows="2" placeholder="Напишите ваш комментарий..." required></textarea>
+        <button type="submit" class="comment-reaction-btn">Отправить</button>
+    </form>
+</div>
+{% else %}
+<div class="login-to-comment">
+    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий</p>
+</div>
+{% endif %}

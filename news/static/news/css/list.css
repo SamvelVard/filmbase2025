@@ -32,3 +32,8 @@
     margin-top: auto !important;
     margin-left: auto !important;
 }
+
+.ispublished-card {
+    border-left: 4px solid #ffc107;
+    background-color: #fff8e1;
+}

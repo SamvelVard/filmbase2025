@@ -1,4 +1,4 @@
-<!-- news/templates/news/comment.html -->
+<div class="comment">
     <div class="comment-header">
         <span class="comment-author">{{ comment.user.username }}</span>
         <span class="comment-date">{{ comment.published_at|date:"d.m H:i" }}</span>
@@ -26,4 +26,48 @@
             </button>
         </form>
     </div>
+
+    {% if request.user == comment.user or request.user.is_superuser %}
+        <div class="comment-delete">
+            <form method="post" action="{% url 'news:comment_delete' comment.id %}"
+                  onsubmit="return confirm('Вы уверены, что хотите удалить этот комментарий?')">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn">
+                    Удалить
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
+    <details class="reply-section">
+        <summary class="reply-btn">Ответить</summary>
+
+        {% if user.is_authenticated %}
+            <div class="add-comment">
+                <form method="post" action="{% url 'news:comment_create' news.id %}">
+                </form>
+            </div>
+        {% else %}
+            <div class="login-to-comment">
+                <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий</p>
+            </div>
+        {% endif %}
+
+        <div class="reply-form-container">
+            <form method="post" action="{% url 'news:comment_create' news.id %}">
+                {% csrf_token %}
+                <textarea name="content" placeholder="Ваш ответ" required></textarea>
+                <input type="hidden" name="parent" value="{{ comment.id }}">
+                <button type="submit" class="reaction-btn">Отправить</button>
+            </form>
+        </div>
+    </details>
+
+    {% for child_comment in all_comments %}
+        {% if child_comment.parent_id == comment.id %}
+            <div class="replies">
+                {% include 'news/comment.html' with comment=child_comment all_comments=all_comments news=news %}
+            </div>
+        {% endif %}
+    {% endfor %}
 </div>

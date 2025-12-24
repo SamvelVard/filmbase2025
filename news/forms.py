@@ -18,6 +18,8 @@ class NewsBlockForm(forms.ModelForm):
         }
 
 class CommentForm(forms.ModelForm):
+    parent = forms.IntegerField(required=False, widget=forms.HiddenInput())
+
     class Meta:
         model = Comment
         fields = ['content']

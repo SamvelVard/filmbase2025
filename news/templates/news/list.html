@@ -5,7 +5,6 @@
 
 {% block content %}
 <div class="news-container">
-    <!-- ЗАГОЛОВОК -->
     <div class="news-header">
         <h1>
             Киноновости
@@ -26,47 +25,42 @@
         </form>
     </div>
 
-    <!-- СПИСОК НОВОСТЕЙ -->
     <div class="news-grid">
         {% for item in news %}
-        <div class="news-card">
-            <!-- ИЗОБРАЖЕНИЕ -->
-            {% if item.image %}
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-thumbnail news-image">
+            {% if item.is_published or user.is_superuser %}
+                <div class="news-card">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-thumbnail news-image">
+                    {% endif %}
+
+                    {% if user.is_superuser %}
+                    <div class="d-grid gap-2 my-4">
+                        <a href="{% url 'news:news_update' item.id %}" class="btn btn-primary btn-block">
+                            <i class="bi-pencil-square"></i>
+                            Редактировать
+                        </a>
+                        <a href="{% url 'news:news_delete' item.id %}" class="btn btn-danger btn-block">
+                            <i class="bi-trash"></i>
+                            Удалить
+                        </a>
+                        <div class="ispublished-card">
+                            {% if item.is_published %}
+                                Опубликовано
+                            {% else %}
+                                Не опубликовано
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                        <h2>
+                            <a href="{% url 'news:news_detail' item.id %}">
+                                {{ item.title }}
+                            </a>
+                        </h2>
+                </div>
             {% endif %}
-
-            {% if user.is_superuser %}
-            <div class="d-grid gap-2 my-4">
-              <a href="{% url 'news:news_update' item.id %}" class="btn btn-primary btn-block">
-                <i class="bi-pencil-square"></i>
-                Редактировать
-              </a>
-              <a href="{% url 'news:news_delete' item.id %}" class="btn btn-danger btn-block">
-                <i class="bi-trash"></i>
-                Удалить
-              </a>
-            </div>
-            {% endif %}
-
-            <!-- КОНТЕНТ -->
-                <h2>
-                    <a href="{% url 'news:news_detail' item.id %}">
-                        {{ item.title }}
-                    </a>
-                </h2>
-
-            <!-- МЕТА ИНФОРМАЦИЯ -->
-{#            <div class="news-meta">#}
-{#                <span class="meta-likes">#}
-{#                  ❤️ {{ news.likes_count }}#}
-{#                </span>#}
-{#                <span class="meta-date">#}
-{#                    {{ item.published_at|date:"d.m.Y" }}#}
-{#                </span>#}
-{#            </div>#}
-        </div>
         {% empty %}
-        <!-- ЕСЛИ НОВОСТЕЙ НЕТ -->
         <div class="no-news">
             <div class="no-news-icon">
                 🎥
@@ -74,9 +68,9 @@
             <h3>Новостей пока нет</h3>
             <p>Скоро появятся свежие анонсы фильмов и новости кино!</p>
             {% if user.is_superuser %}
-            <a href="/admin/news/news/add/" class="add-first-news">
-                Добавить первую новость
-            </a>
+                <a href="/admin/news/news/add/" class="add-first-news">
+                    Добавить первую новость
+                </a>
             {% endif %}
         </div>
         {% endfor %}

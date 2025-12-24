@@ -11,7 +11,10 @@ def check_admin(user):
     return user.is_superuser
 
 def news_list(request):
-    news = News.objects.filter(is_published=True)
+    if request.user.is_superuser:
+        news = News.objects.all()
+    else:
+        news = News.objects.filter(is_published=True)
     query = request.GET.get('query', '')
     if query:
         news = news.filter(title__icontains=query)
@@ -154,10 +157,21 @@ def comment_create(request, id):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.news = news
-            comment.user = request.user
+            comment.user = request.user  # Устанавливаем текущего пользователя
+            comment.is_published = True
+            parent_id = request.POST.get('parent')
+            if parent_id and parent_id.isdigit():
+                parent_comment = Comment.objects.get(id=int(parent_id), news=news)
+                comment.parent = parent_comment
+            else:
+                # Если родительский комментарий не найден, создаем корневой
+                comment.parent = None
+
             comment.save()
             messages.success(request, 'Комментарий добавлен')
             return redirect('news:news_detail', id=news.id)
+        else:
+            messages.info(request, "Nigga")
     return redirect('news:news_detail', id=news.id)
 
 
